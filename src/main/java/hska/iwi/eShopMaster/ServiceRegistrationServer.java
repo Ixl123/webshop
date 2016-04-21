@@ -11,7 +11,11 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 @SpringBootApplication
 @EnableEurekaServer
 public class ServiceRegistrationServer {
-
+    /**
+     * Run the application using Spring Boot and an embedded servlet engine.
+     *
+     * @param args Program arguments - ignored.
+     */
     public static void main(String[] args) {
         // Tell Boot to look for registration-server.yml
         System.setProperty("spring.config.name", "registration-server");
