@@ -1,9 +1,9 @@
 package hska.iwi.eShopMaster.controller;
 
+import hska.iwi.eShopMaster.microservices.accounts.LoginService;
 import hska.iwi.eShopMaster.model.businessLogic.manager.UserManager;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.UserManagerImpl;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
-
 import java.util.Map;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -25,6 +25,9 @@ public class LoginAction extends ActionSupport {
 	@Override
 	public String execute() throws Exception {
 
+		LoginService loginService = new LoginService();
+		loginService.login();
+		
 		// Return string:
 		String result = "input";
 

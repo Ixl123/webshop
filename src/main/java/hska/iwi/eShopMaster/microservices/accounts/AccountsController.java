@@ -15,4 +15,10 @@ public class AccountsController {
 		return "Hello World!";
 	}
 	
+	@RequestMapping(value = "accounts/login", method = RequestMethod.GET)
+	@ResponseBody
+	public String login() {
+		return "Logged in!";
+	}
+	
 }
