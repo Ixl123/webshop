@@ -7,6 +7,6 @@ import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
 public interface UserRepository extends Repository<User, Integer> {
 
-	@Query("SELECT count(*) from customer")
+	@Query("SELECT count(*) from User")
 	public int countUsers();
 }

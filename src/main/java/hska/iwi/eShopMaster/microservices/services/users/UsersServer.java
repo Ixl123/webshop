@@ -13,18 +13,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import hska.iwi.eShopMaster.microservices.users.DBAuthenticationServer;
 import hska.iwi.eShopMaster.microservices.users.UserRepository;
 
 
-@EnableAutoConfiguration
-//@SpringBootApplication
+//@EntityScan("hska.iwi.eShopMaster.microservices.users")
+//@EnableJpaRepositories("hska.iwi.eShopMaster.microservices.users")
+//@PropertySource("classpath:db-config.properties")
+@SpringBootApplication
+//@EnableAutoConfiguration
 @EnableDiscoveryClient
-@EntityScan("hska.iwi.eShopMaster.microservices.users")
-@EnableJpaRepositories("hska.iwi.eShopMaster.microservices.users")
-@PropertySource("classpath:db-config.properties")
+@Import(DBAuthenticationServer.class)
 public class UsersServer {
 	
 	@Autowired
@@ -35,40 +38,40 @@ public class UsersServer {
         SpringApplication.run(UsersServer.class, args);
 	}
 	
-	@Bean
-	public DataSource dataSource() {
-		DataSource dataSource = new DataSource();
-//        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-//        dataSource.setUrl("jdbc:mysql://localhost:3306/webshop");
-//        dataSource.setUsername("root");
-//        dataSource.setPassword("root");
-		
-		String filename = "db-config.properties";
-        Properties properties = new Properties();
-        InputStream input = null;
-
-        try {
-            input = UsersServer.class.getClassLoader().getResourceAsStream(filename);
-            properties.load(input);
-
-            dataSource.setDriverClassName(properties.getProperty("spring.jpa.driver_class"));
-            dataSource.setUrl(properties.getProperty("spring.jpa.url"));
-            dataSource.setUsername(properties.getProperty("spring.jpa.username"));
-            dataSource.setPassword(properties.getProperty("spring.jpa.password"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return dataSource;
-	}
+//	@Bean
+//	public DataSource dataSource() {
+//		DataSource dataSource = new DataSource();
+////        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+////        dataSource.setUrl("jdbc:mysql://localhost:3306/webshop");
+////        dataSource.setUsername("root");
+////        dataSource.setPassword("root");
+//		
+//		String filename = "db-config.properties";
+//        Properties properties = new Properties();
+//        InputStream input = null;
+//
+//        try {
+//            input = UsersServer.class.getClassLoader().getResourceAsStream(filename);
+//            properties.load(input);
+//
+//            dataSource.setDriverClassName(properties.getProperty("spring.jpa.driver_class"));
+//            dataSource.setUrl(properties.getProperty("spring.jpa.url"));
+//            dataSource.setUsername(properties.getProperty("spring.jpa.username"));
+//            dataSource.setPassword(properties.getProperty("spring.jpa.password"));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (input != null) {
+//                try {
+//                    input.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return dataSource;
+//	}
 	
 }

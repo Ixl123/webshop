@@ -23,7 +23,7 @@
     </parent>
     
 	<dependencies>
-        <dependency>
+		<dependency>
             <!-- Setup Spring Boot -->
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -115,6 +115,10 @@
         <dependency>
         	<groupId>org.springframework.boot</groupId>
         	<artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>org.hsqldb</groupId>
+        	<artifactId>hsqldb</artifactId>
         </dependency>
 	</dependencies>
 </project>
