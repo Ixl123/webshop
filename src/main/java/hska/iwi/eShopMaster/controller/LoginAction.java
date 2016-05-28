@@ -1,9 +1,10 @@
 package hska.iwi.eShopMaster.controller;
 
-import hska.iwi.eShopMaster.model.businessLogic.manager.UserManager;
-import hska.iwi.eShopMaster.model.businessLogic.manager.impl.UserManagerImpl;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
+
 import java.util.Map;
+
+import org.springframework.web.client.RestTemplate;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -26,11 +27,15 @@ public class LoginAction extends ActionSupport {
 		
 		// Return string:
 		String result = "input";
+		
+		RestTemplate rest = new RestTemplate();
+		String serviceURL = "http://localhost:3333" + "/users/{username}";
+		User user = rest.getForObject(serviceURL, User.class, getUsername());
 
-		UserManager myCManager = new UserManagerImpl();
+//		UserManager myCManager = new UserManagerImpl();
 		
 		// Get user from DB:
-		User user = myCManager.getUserByUsername(getUsername());
+//		User user = myCManager.getUserByUsername(getUsername());
 
 		// Does user exist?
 		if (user != null) {

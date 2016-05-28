@@ -18,6 +18,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import hska.iwi.eShopMaster.microservices.users.DBAuthenticationServer;
+import hska.iwi.eShopMaster.microservices.users.RoleRepository;
 import hska.iwi.eShopMaster.microservices.users.UserRepository;
 
 
@@ -32,6 +33,9 @@ public class UsersServer {
 	
 	@Autowired
 	protected UserRepository userRepository;
+	
+	@Autowired
+	protected RoleRepository roleRepository;
 	
 	public static void main(String[] args) {
 		System.setProperty("spring.config.name", "users-server");

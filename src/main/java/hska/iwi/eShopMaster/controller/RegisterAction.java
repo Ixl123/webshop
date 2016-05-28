@@ -1,10 +1,18 @@
 package hska.iwi.eShopMaster.controller;
 
+import hska.iwi.eShopMaster.microservices.services.webshop.WebshopServer;
 import hska.iwi.eShopMaster.model.businessLogic.manager.UserManager;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.UserManagerImpl;
 import hska.iwi.eShopMaster.model.database.dataobjects.Role;
+import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
 import java.util.Map;
+
+import org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -28,22 +36,40 @@ public class RegisterAction extends ActionSupport {
         
         // Return string:
         String result = "input";
+        
+        RestTemplate rest = new RestTemplate();
+        String serviceURL = WebshopServer.WEBSHOP_SERVICE_URL + "/users/{username}";
+		User user = rest.getForObject(serviceURL, User.class, this.username);
 
-        UserManager userManager = new UserManagerImpl();
-
-   		this.role = userManager.getRoleByLevel(1); // 1 -> regular User, 2-> Admin
-
-   		if (!userManager.doesUserAlreadyExist(this.username)) {
+//        UserManager userManager = new UserManagerImpl();
+//   		this.role = userManager.getRoleByLevel(1); // 1 -> regular User, 2-> Admin
+//   		if (!userManager.doesUserAlreadyExist(this.username)) {
+		if (user == null) {
+			User userR = new User();
+			userR.setUsername(this.username);
+			userR.setFirstname(this.firstname);
+			userR.setLastname(this.lastname);
+			userR.setPassword(this.password1);
+			
+   			String serviceURL1 = WebshopServer.WEBSHOP_SERVICE_URL + "/users";
+   			ResponseEntity<User> response = rest.postForEntity(serviceURL1,
+   															   userR,
+   															   User.class);
+   			
+   			if (response.getStatusCode() == HttpStatus.CREATED) {
+   				System.out.println("Successfully User created!");
+   			} else {
+   				System.out.println("Error: User could not be created!");
+   			}
     		    	
 	        // save it to database
-	        userManager.registerUser(this.username, this.firstname, this.lastname, this.password1, this.role);
-	            // User has been saved successfully to databse:
-	        	addActionMessage("user registered, please login");
-	        	addActionError("user registered, please login");
-				Map<String, Object> session = ActionContext.getContext().getSession();
-				session.put("message", "user registered, please login");
-	            result = "success";
-	        
+//	        userManager.registerUser(this.username, this.firstname, this.lastname, this.password1, this.role);
+            // User has been saved successfully to databse:
+        	addActionMessage("user registered, please login");
+        	addActionError("user registered, please login");
+			Map<String, Object> session = ActionContext.getContext().getSession();
+			session.put("message", "user registered, please login");
+            result = "success";        
     	}
     	else {
     		addActionError(getText("error.username.alreadyInUse"));

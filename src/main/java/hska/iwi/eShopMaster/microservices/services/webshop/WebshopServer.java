@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(useDefaultFilters = false)
 public class WebshopServer {
 
+	public static final String WEBSHOP_SERVICE_URL = "http://localhost:3333";
 	public static final String USERS_SERVICE_URL = "http://USERS-SERVICE";
 
 	public static void main(String[] args) {
