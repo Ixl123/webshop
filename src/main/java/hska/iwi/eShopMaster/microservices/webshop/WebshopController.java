@@ -1,5 +1,8 @@
 package hska.iwi.eShopMaster.microservices.webshop;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -36,12 +39,23 @@ public class WebshopController {
 	
 	@RequestMapping(value = "/categories/create", method = RequestMethod.POST)
 	public ResponseEntity<Category> createCategory(@RequestBody String categoryName) {
-		System.out.println("POST!");
 		return webshopService.addCategory(categoryName);
 	}
 	
 	@RequestMapping("/categories")
 	public ResponseEntity<Category[]> getCategories() {
 		return webshopService.getCategories();
+	}
+	
+	@RequestMapping(value = "categories/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<String> deleteCategory(@PathVariable("id") int id) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("id", String.valueOf(id));
+		return webshopService.deleteCategory(params);
+	}
+	
+	@RequestMapping("/categories/{name}")
+	public ResponseEntity<Category> getCategory(@PathVariable("name") String categoryName) {
+		return webshopService.getCategory(categoryName);
 	}
 }

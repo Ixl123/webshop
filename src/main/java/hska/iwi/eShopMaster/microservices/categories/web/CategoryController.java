@@ -36,16 +36,20 @@ public class CategoryController {
 	}
 	
 	@RequestMapping("/categories")
-	@ResponseBody
 	public List<Category> getCategories() {
 		List<Category> categories = categoryRepository.getCategories();
 		return categories;
 	}
 	
+	@RequestMapping(value = "/categories/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<String> deleteCategory(@PathVariable("id") int id) {
+		categoryRepository.delete(id);
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
 	@RequestMapping("/categories/{name}")
-	public Category getCategories(@PathVariable("name") String name) {
+	public ResponseEntity<Category> getCategories(@PathVariable("name") String name) {
 		Category category = categoryRepository.findByName(name);
-		System.out.println(category.getName());
-		return category;
+		return new ResponseEntity<Category>(category, HttpStatus.OK);
 	}
 }

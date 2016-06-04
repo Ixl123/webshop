@@ -25,10 +25,10 @@ public class AddCategoryAction extends ActionSupport {
 	private static final long serialVersionUID = -6704600867133294378L;
 	
 	private String newCatName = null;
-	
 	private List<Category> categories;
-	
-	User user;
+	private User user;
+	private String serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/categories/create";
+	private String serviceUrlGet = WebshopServer.WEBSHOP_SERVICE_URL + "/categories";
 
 	public String execute() throws Exception {
 
@@ -38,8 +38,6 @@ public class AddCategoryAction extends ActionSupport {
 		user = (User) session.get("webshop_user");
 		if(user != null && (user.getRole().getTyp().equals("admin"))) {
 			RestTemplate rest = new RestTemplate();
-			String serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/categories/create";
-			String serviceUrlGet = WebshopServer.WEBSHOP_SERVICE_URL + "/categories";
 			ResponseEntity<Category> response = rest.postForEntity(serviceUrl,
 																   newCatName,
 																   Category.class);
@@ -70,9 +68,7 @@ public class AddCategoryAction extends ActionSupport {
 			
 			res = "success";
 		}
-		
 		return res;
-	
 	}
 	
 	@Override
@@ -81,8 +77,21 @@ public class AddCategoryAction extends ActionSupport {
 			addActionError(getText("error.catname.required"));
 		}
 		// Go and get new Category list
-		CategoryManager categoryManager = new CategoryManagerImpl();
-		this.setCategories(categoryManager.getCategories());
+//		CategoryManager categoryManager = new CategoryManagerImpl();
+//		this.setCategories(categoryManager.getCategories());
+		
+		RestTemplate rest = new RestTemplate();
+		ResponseEntity<Category[]> categories = rest.getForEntity(serviceUrlGet, Category[].class);
+		if (categories.getStatusCode() == HttpStatus.OK) {
+			List<Category> body = Arrays.asList(categories.getBody());
+			if (!body.isEmpty()) {
+				this.setCategories(body);
+			} else {
+				System.out.println("Error: List of categories is empty!");
+			}
+		} else {
+			System.out.println("Error: Could not get categories!");
+		}
 	}
 
 	public List<Category> getCategories() {

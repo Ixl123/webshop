@@ -1,6 +1,9 @@
 package hska.iwi.eShopMaster.microservices.webshop;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -39,6 +42,16 @@ public class WebshopService {
 	
 	public ResponseEntity<Category[]> getCategories() {
 		return restTemplate.getForEntity(categoryServiceUrl + "/categories", Category[].class);
+	}
+	
+	public ResponseEntity<String> deleteCategory(Map<String, String> params) {
+		restTemplate.delete(categoryServiceUrl + "/categories/{id}", params);
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	public ResponseEntity<Category> getCategory(String categoryName) {
+		return restTemplate.getForEntity(categoryServiceUrl + "/categories/{name}",
+										 Category.class, categoryName);
 	}
 }
 

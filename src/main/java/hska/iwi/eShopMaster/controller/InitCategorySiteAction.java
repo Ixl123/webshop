@@ -1,12 +1,18 @@
 package hska.iwi.eShopMaster.controller;
 
+import hska.iwi.eShopMaster.microservices.webshop.WebshopServer;
 import hska.iwi.eShopMaster.model.businessLogic.manager.CategoryManager;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.CategoryManagerImpl;
 import hska.iwi.eShopMaster.model.database.dataobjects.Category;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -31,9 +37,19 @@ public class InitCategorySiteAction extends ActionSupport {
 		user = (User) session.get("webshop_user");
 		boolean isAdmin = true;
 		if(user != null && isAdmin) {
-
-			CategoryManager categoryManager = new CategoryManagerImpl();
-			this.setCategories(categoryManager.getCategories());
+			String serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/categories";
+			RestTemplate rest = new RestTemplate();
+			ResponseEntity<Category[]> categories = rest.getForEntity(serviceUrl, Category[].class);
+			if (categories.getStatusCode() == HttpStatus.OK) {
+				List<Category> body = Arrays.asList(categories.getBody());
+				if (!body.isEmpty()) {
+					this.setCategories(body);
+				} else {
+					System.out.println("Error: List of categories is empty!");
+				}
+			} else {
+				System.out.println("Error: Could not get categories!");
+			}
 			
 			if(pageToGoTo != null){
 				if(pageToGoTo.equals("c")){
