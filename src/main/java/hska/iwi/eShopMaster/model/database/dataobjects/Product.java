@@ -9,6 +9,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.fasterxml.jackson.annotation.JsonRootName;
+
 /**
  * This class contains details about products.
  */
@@ -32,7 +37,6 @@ public class Product implements java.io.Serializable {
 	@Column(name = "price")
 	private double price;
 
-	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	private Category category;
@@ -52,7 +56,7 @@ public class Product implements java.io.Serializable {
 	public Product(String name, double price, Category category, String details) {
 		this.name = name;
 		this.price = price;
-		this.category = category;
+//		this.category = category;
 		this.details = details;
 	}
 

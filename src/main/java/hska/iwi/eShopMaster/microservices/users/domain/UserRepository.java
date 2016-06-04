@@ -1,4 +1,4 @@
-package hska.iwi.eShopMaster.microservices.users;
+package hska.iwi.eShopMaster.microservices.users.domain;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;

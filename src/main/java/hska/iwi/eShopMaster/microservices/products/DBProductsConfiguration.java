@@ -1,4 +1,4 @@
-package hska.iwi.eShopMaster.microservices.users;
+package hska.iwi.eShopMaster.microservices.products;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,32 +13,27 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import hska.iwi.eShopMaster.microservices.services.users.UsersServer;
+import hska.iwi.eShopMaster.microservices.users.UsersServer;
 
 @SpringBootApplication
 @EntityScan("hska.iwi.eShopMaster.model.database.dataobjects")
-@EnableJpaRepositories("hska.iwi.eShopMaster.microservices.users")
+@EnableJpaRepositories("hska.iwi.eShopMaster.microservices.products.domain")
 @PropertySource("classpath:db-config.properties")
-public class DBAuthenticationServer {
+public class DBProductsConfiguration {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DBAuthenticationServer.class, args);
+		SpringApplication.run(DBProductsConfiguration.class, args);
 	}
 	
 	@Bean
 	public DataSource dataSource() {
-		DataSource dataSource = new DataSource();
-//        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-//        dataSource.setUrl("jdbc:mysql://localhost:3306/webshop");
-//        dataSource.setUsername("root");
-//        dataSource.setPassword("root");
-		
+		DataSource dataSource = new DataSource();		
 		String filename = "db-config.properties";
         Properties properties = new Properties();
         InputStream input = null;
 
         try {
-            input = UsersServer.class.getClassLoader().getResourceAsStream(filename);
+            input = DBProductsConfiguration.class.getClassLoader().getResourceAsStream(filename);
             properties.load(input);
 
             dataSource.setDriverClassName(properties.getProperty("spring.jpa.driver_class"));
@@ -60,14 +55,4 @@ public class DBAuthenticationServer {
         }
         return dataSource;
 	}
-
-//	@Bean
-//	public DataSource dataSource() {
-//		DataSource dataSource = new DataSource();
-//        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-//        dataSource.setUrl("jdbc:mysql://localhost:3306/webshop");
-//        dataSource.setUsername("root");
-//        dataSource.setPassword("root");
-//        return dataSource;
-//	}
 }

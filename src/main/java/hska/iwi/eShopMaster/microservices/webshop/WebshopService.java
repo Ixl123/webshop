@@ -1,19 +1,11 @@
-package hska.iwi.eShopMaster.microservices.services.webshop;
-
-import java.util.List;
+package hska.iwi.eShopMaster.microservices.webshop;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import hska.iwi.eShopMaster.model.database.dataobjects.Role;
+import hska.iwi.eShopMaster.model.database.dataobjects.Category;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
 @Service
@@ -22,20 +14,31 @@ public class WebshopService {
 	@Autowired
 	protected RestTemplate restTemplate;
 
-	protected String serviceUrl;
+	protected String userServiceUrl;
+	protected String categoryServiceUrl;
 	
-	public WebshopService(String serviceUrl) {
-		this.serviceUrl = serviceUrl.startsWith("http") ? serviceUrl
-				: "http://" + serviceUrl;
+	public WebshopService(String userServiceUrl, String categoryServiceUrl) {
+		this.userServiceUrl = userServiceUrl.startsWith("http") ? userServiceUrl
+				: "http://" + userServiceUrl;
+		this.categoryServiceUrl = categoryServiceUrl.startsWith("http") ? categoryServiceUrl
+				: "http://" + categoryServiceUrl;
 	}
 	
 	public User findByUsername(String username) {
-		return restTemplate.getForObject(serviceUrl + "/users/{username}",
+		return restTemplate.getForObject(userServiceUrl + "/users/{username}",
 				User.class, username);
 	}
 	
 	public ResponseEntity<User> registerUser(User user) {
-		return restTemplate.postForEntity(serviceUrl + "/users", user, User.class);
+		return restTemplate.postForEntity(userServiceUrl + "/users", user, User.class);
+	}
+	
+	public ResponseEntity<Category> addCategory(String categoryName) {
+		return restTemplate.postForEntity(categoryServiceUrl + "/categories/create", categoryName, Category.class);
+	}
+	
+	public ResponseEntity<Category[]> getCategories() {
+		return restTemplate.getForEntity(categoryServiceUrl + "/categories", Category[].class);
 	}
 }
 

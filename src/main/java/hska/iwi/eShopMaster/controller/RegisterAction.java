@@ -1,6 +1,6 @@
 package hska.iwi.eShopMaster.controller;
 
-import hska.iwi.eShopMaster.microservices.services.webshop.WebshopServer;
+import hska.iwi.eShopMaster.microservices.webshop.WebshopServer;
 import hska.iwi.eShopMaster.model.businessLogic.manager.UserManager;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.UserManagerImpl;
 import hska.iwi.eShopMaster.model.database.dataobjects.Role;

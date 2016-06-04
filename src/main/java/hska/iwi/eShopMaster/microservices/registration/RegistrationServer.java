@@ -1,4 +1,4 @@
-package hska.iwi.eShopMaster.microservices.services.registration;
+package hska.iwi.eShopMaster.microservices.registration;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
