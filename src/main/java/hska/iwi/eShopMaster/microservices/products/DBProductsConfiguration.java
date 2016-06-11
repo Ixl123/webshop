@@ -16,7 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import hska.iwi.eShopMaster.microservices.users.UsersServer;
 
 @SpringBootApplication
-@EntityScan("hska.iwi.eShopMaster.model.database.dataobjects")
+//@EntityScan("hska.iwi.eShopMaster.model.database.dataobjects")
 @EnableJpaRepositories("hska.iwi.eShopMaster.microservices.products.domain")
 @PropertySource("classpath:db-config.properties")
 public class DBProductsConfiguration {

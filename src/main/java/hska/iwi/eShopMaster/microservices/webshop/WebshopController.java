@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import hska.iwi.eShopMaster.microservices.products.domain.Product;
 import hska.iwi.eShopMaster.model.database.dataobjects.Category;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
@@ -57,5 +58,20 @@ public class WebshopController {
 	@RequestMapping("/categories/{name}")
 	public ResponseEntity<Category> getCategory(@PathVariable("name") String categoryName) {
 		return webshopService.getCategory(categoryName);
+	}
+	
+	@RequestMapping(value = "/products", method = RequestMethod.POST)
+	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+		return webshopService.createProduct(product);
+	}
+	
+	@RequestMapping(value = "/products/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<String> deleteProduct(@PathVariable("id") int id) {
+		return webshopService.deleteProduct(id);
+	}
+	
+	@RequestMapping(value = "products/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Product> getProduct(@PathVariable("id") int id) {
+		return webshopService.getProduct(id);
 	}
 }

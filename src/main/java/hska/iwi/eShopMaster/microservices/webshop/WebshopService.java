@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import hska.iwi.eShopMaster.microservices.products.domain.Product;
 import hska.iwi.eShopMaster.model.database.dataobjects.Category;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
@@ -19,12 +20,15 @@ public class WebshopService {
 
 	protected String userServiceUrl;
 	protected String categoryServiceUrl;
+	protected String productServiceUrl;
 	
-	public WebshopService(String userServiceUrl, String categoryServiceUrl) {
-		this.userServiceUrl = userServiceUrl.startsWith("http") ? userServiceUrl
-				: "http://" + userServiceUrl;
-		this.categoryServiceUrl = categoryServiceUrl.startsWith("http") ? categoryServiceUrl
-				: "http://" + categoryServiceUrl;
+	public WebshopService(String userServiceUrl,
+						  String categoryServiceUrl,
+						  String productServiceUrl) {
+		
+		this.userServiceUrl = userServiceUrl;
+		this.categoryServiceUrl = categoryServiceUrl;
+		this.productServiceUrl = productServiceUrl;
 	}
 	
 	public User findByUsername(String username) {
@@ -45,13 +49,32 @@ public class WebshopService {
 	}
 	
 	public ResponseEntity<String> deleteCategory(Map<String, String> params) {
-		restTemplate.delete(categoryServiceUrl + "/categories/{id}", params);
+		ResponseEntity<Product[]> response = restTemplate.getForEntity(productServiceUrl + "/products/byCategory/{categoryid}",
+								  Product[].class, Integer.parseInt(params.get("id")));
+		if ((response.getStatusCode() == HttpStatus.OK) && (response.getBody().length == 0)) {
+			restTemplate.delete(categoryServiceUrl + "/categories/{id}", params);
+		}
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
 	public ResponseEntity<Category> getCategory(String categoryName) {
 		return restTemplate.getForEntity(categoryServiceUrl + "/categories/{name}",
 										 Category.class, categoryName);
+	}
+	
+	public ResponseEntity<Product> createProduct(Product product) {
+		return restTemplate.postForEntity(productServiceUrl + "/products",
+										  product, Product.class);
+	}
+	
+	public ResponseEntity<String> deleteProduct(int id) {
+		restTemplate.delete(productServiceUrl + "/products/{id}", id);
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	public ResponseEntity<Product> getProduct(int id) {
+		return restTemplate.getForEntity(productServiceUrl + "/products/{id}",
+										 Product.class, id);
 	}
 }
 

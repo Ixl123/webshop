@@ -1,5 +1,7 @@
 package hska.iwi.eShopMaster.controller;
 
+import hska.iwi.eShopMaster.microservices.products.domain.Product;
+import hska.iwi.eShopMaster.microservices.webshop.WebshopServer;
 import hska.iwi.eShopMaster.model.businessLogic.manager.CategoryManager;
 import hska.iwi.eShopMaster.model.businessLogic.manager.ProductManager;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.CategoryManagerImpl;
@@ -7,8 +9,13 @@ import hska.iwi.eShopMaster.model.businessLogic.manager.impl.ProductManagerImpl;
 import hska.iwi.eShopMaster.model.database.dataobjects.Category;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -30,13 +37,24 @@ public class AddProductAction extends ActionSupport {
 
 		if(user != null && (user.getRole().getTyp().equals("admin"))) {
 
-			ProductManager productManager = new ProductManagerImpl();
-			int productId = productManager.addProduct(name, Double.parseDouble(price), categoryId,
-					details);
-
-			if (productId > 0) {
+			Product product = new Product();
+			product.setName(name);
+			product.setPrice(Double.parseDouble(price));
+			product.setCategoryId(categoryId);
+			product.setDetails(details);
+			
+			String serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/products";
+			RestTemplate rest = new RestTemplate();
+			ResponseEntity<Product> response = rest.postForEntity(serviceUrl, product, Product.class);
+			
+			if (response.equals(HttpStatus.CREATED)) {
+				System.out.println("Successfully created Product!");
 				result = "success";
 			}
+			
+//			ProductManager productManager = new ProductManagerImpl();
+//			int productId = productManager.addProduct(name, Double.parseDouble(price), categoryId,
+//					details);
 		}
 
 		return result;
@@ -44,10 +62,25 @@ public class AddProductAction extends ActionSupport {
 
 	@Override
 	public void validate() {
-		CategoryManager categoryManager = new CategoryManagerImpl();
-		this.setCategories(categoryManager.getCategories());
+//		CategoryManager categoryManager = new CategoryManagerImpl();
+//		this.setCategories(categoryManager.getCategories());
 		// Validate name:
 
+		RestTemplate rest = new RestTemplate();
+		String serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/categories";
+		ResponseEntity<Category[]> categories = rest.getForEntity(serviceUrl,
+																  Category[].class);
+		if (categories.getStatusCode() == HttpStatus.OK) {
+			List<Category> body = Arrays.asList(categories.getBody());
+			if (!body.isEmpty()) {
+				this.setCategories(body);
+			} else {
+				System.out.println("Error: List of categories is empty!");
+			}
+		} else {
+			System.out.println("Error: Could not get categories!");
+		}
+		
 		if (getName() == null || getName().length() == 0) {
 			addActionError(getText("error.product.name.required"));
 		}

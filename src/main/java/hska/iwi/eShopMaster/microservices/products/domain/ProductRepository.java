@@ -1,12 +1,14 @@
 package hska.iwi.eShopMaster.microservices.products.domain;
 
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.Repository;
+import java.util.List;
 
-import hska.iwi.eShopMaster.model.database.dataobjects.Product;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 
 public interface ProductRepository extends CrudRepository<Product, Integer> {
 	
-	Product findById(int id);
+//	@Query("SELECT p.category_id FROM Product p where p.category_id = id")
+	@Query("select u from Product u where u.category_id = ?1")
+	List<Product> getProductsWithCategoryId(int id);
 	
 }
