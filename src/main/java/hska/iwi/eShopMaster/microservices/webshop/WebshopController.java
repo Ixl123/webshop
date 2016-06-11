@@ -74,4 +74,9 @@ public class WebshopController {
 	public ResponseEntity<Product> getProduct(@PathVariable("id") int id) {
 		return webshopService.getProduct(id);
 	}
+	
+	@RequestMapping("/products")
+	public ResponseEntity<Product[]> getProducts() {
+		return webshopService.getProducts();
+	}
 }

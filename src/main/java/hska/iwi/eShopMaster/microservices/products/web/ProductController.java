@@ -48,4 +48,10 @@ public class ProductController {
 		Product product = productRepository.findOne(id);
 		return new ResponseEntity<Product>(product, HttpStatus.OK); 
 	}
+	
+	@RequestMapping()
+	public List<Product> getProducts() {
+		List<Product> products = (List<Product>) productRepository.findAll();
+		return products;
+	}
 }

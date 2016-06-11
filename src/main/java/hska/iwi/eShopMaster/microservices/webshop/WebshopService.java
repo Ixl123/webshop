@@ -76,6 +76,10 @@ public class WebshopService {
 		return restTemplate.getForEntity(productServiceUrl + "/products/{id}",
 										 Product.class, id);
 	}
+	
+	public ResponseEntity<Product[]> getProducts() {
+		return restTemplate.getForEntity(productServiceUrl + "/products", Product[].class);
+	}
 }
 
 //@Component
