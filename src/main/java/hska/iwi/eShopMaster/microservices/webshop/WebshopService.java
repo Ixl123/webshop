@@ -1,5 +1,6 @@
 package hska.iwi.eShopMaster.microservices.webshop;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import hska.iwi.eShopMaster.microservices.products.domain.Product;
-import hska.iwi.eShopMaster.model.database.dataobjects.Category;
+import hska.iwi.eShopMaster.microservices.categories.domain.Category;
+import hska.iwi.eShopMaster.model.database.dataobjects.Product;
+//import hska.iwi.eShopMaster.microservices.products.domain.Product;
+//import hska.iwi.eShopMaster.model.database.dataobjects.Category;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
 @Service
@@ -58,7 +61,7 @@ public class WebshopService {
 	}
 	
 	public ResponseEntity<Category> getCategory(String categoryName) {
-		return restTemplate.getForEntity(categoryServiceUrl + "/categories/{name}",
+		return restTemplate.getForEntity(categoryServiceUrl + "/categories/name/{name}",
 										 Category.class, categoryName);
 	}
 	
@@ -78,7 +81,38 @@ public class WebshopService {
 	}
 	
 	public ResponseEntity<Product[]> getProducts() {
-		return restTemplate.getForEntity(productServiceUrl + "/products", Product[].class);
+		ResponseEntity<Product[]> response = restTemplate.getForEntity(productServiceUrl + "/products", Product[].class);
+		for (Product product : response.getBody()) {
+			getCategoryForProduct(product, getCategoryIdFromProduct(product.getId()));
+		}
+		return response;
+	}
+	
+	public ResponseEntity<Product[]> searchForProducts(Map<String, String> params) {
+		System.out.println("Webshop is searching!");
+		return restTemplate.getForEntity(productServiceUrl
+										 + "/products/{details}/{minPrice}/{maxPrice}",
+										 Product[].class, params);
+	}
+	
+	private int getCategoryIdFromProduct(int productId) {
+		ResponseEntity<Integer> response = restTemplate.getForEntity(productServiceUrl
+																	 + "/products/{id}/categoryid",
+																	 Integer.class,
+																	 productId);
+		return response.getBody();
+	}
+	
+	private void getCategoryForProduct(Product product,
+										int categoryId) {
+		ResponseEntity<Category> response = restTemplate.getForEntity(categoryServiceUrl
+																	  + "/categories/{id}",
+																	  Category.class,
+																	  categoryId);
+		hska.iwi.eShopMaster.model.database.dataobjects.Category category = 
+				new hska.iwi.eShopMaster.model.database.dataobjects.Category(response.getBody().getName());
+		category.setId(categoryId);
+		product.setCategory(category);
 	}
 }
 

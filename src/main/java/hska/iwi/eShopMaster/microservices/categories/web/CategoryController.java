@@ -30,7 +30,7 @@ public class CategoryController {
 		return new ResponseEntity<Category>(createdCategory, HttpStatus.CREATED);
 	}
 	
-	@RequestMapping("/categories")
+	@RequestMapping(value = "/categories", method = RequestMethod.GET)
 	public List<Category> getCategories() {
 		List<Category> categories = categoryRepository.getCategories();
 		return categories;
@@ -42,9 +42,15 @@ public class CategoryController {
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
-	@RequestMapping("/categories/{name}")
+	@RequestMapping(value = "/categories/name/{name}", method = RequestMethod.GET)
 	public ResponseEntity<Category> getCategories(@PathVariable("name") String name) {
 		Category category = categoryRepository.findByName(name);
+		return new ResponseEntity<Category>(category, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Category> getCategorie(@PathVariable("id") int id) {
+		Category category = categoryRepository.findOne(id);
 		return new ResponseEntity<Category>(category, HttpStatus.OK);
 	}
 }

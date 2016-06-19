@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.annotation.JsonIgnore;
+
 import hska.iwi.eShopMaster.microservices.categories.domain.Category;
 
 /**
@@ -36,7 +38,7 @@ public class Product implements java.io.Serializable {
 
 	@Column(name = "details")
 	private String details;
-
+	
 	public Product() {
 	}
 
@@ -92,5 +94,4 @@ public class Product implements java.io.Serializable {
 	public void setDetails(String details) {
 		this.details = details;
 	}
-
 }

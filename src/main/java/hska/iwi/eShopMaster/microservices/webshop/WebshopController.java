@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import hska.iwi.eShopMaster.microservices.products.domain.Product;
-import hska.iwi.eShopMaster.model.database.dataobjects.Category;
+import hska.iwi.eShopMaster.microservices.categories.domain.Category;
+import hska.iwi.eShopMaster.model.database.dataobjects.Product;
+//import hska.iwi.eShopMaster.microservices.products.domain.Product;
+//import hska.iwi.eShopMaster.model.database.dataobjects.Category;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
 @RestController
@@ -75,8 +78,20 @@ public class WebshopController {
 		return webshopService.getProduct(id);
 	}
 	
-	@RequestMapping("/products")
+	@RequestMapping(value = "/products", method = RequestMethod.GET)
 	public ResponseEntity<Product[]> getProducts() {
 		return webshopService.getProducts();
+	}
+	
+	@RequestMapping(value = "/products/{details}/{minPrice}/{maxPrice}", method = RequestMethod.GET)
+	public ResponseEntity<Product[]> searchForProducts(@PathVariable("details") String details,
+													   @PathVariable("minPrice") String minPrice,
+													   @PathVariable("maxPrice") String maxPrice) {
+		System.out.println("Details: " + details);
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("details", details);
+		params.put("minPrice", minPrice);
+		params.put("maxPrice", maxPrice);
+		return webshopService.searchForProducts(params);
 	}
 }
