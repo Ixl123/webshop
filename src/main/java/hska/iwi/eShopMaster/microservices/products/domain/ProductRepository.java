@@ -11,7 +11,7 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
 	@Query("select u from Product u where u.category_id = ?1")
 	List<Product> getProductsWithCategoryId(int id);
 	
-	@Query("select u from Product u where u.details like %?1% or u.price between ?2 and ?3")
+	@Query("select u from Product u where u.details like ?1 and u.price between ?2 and ?3")
 	List<Product> searchForProducts(String details, double minPrice, double maxPrice);
 	
 }

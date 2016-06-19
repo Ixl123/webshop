@@ -65,9 +65,21 @@ public class SearchAction extends ActionSupport{
 			String serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/products/{details}/{minPrice}/{maxPrice}";
 			RestTemplate rest = new RestTemplate();
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("details", searchDescription);
-			params.put("minPrice", searchMinPrice);
-			params.put("maxPrice", searchMaxPrice);
+			if (searchDescription.isEmpty()) {
+				params.put("details", "%%");
+			} else {				
+				params.put("details", "%" + searchDescription + "%");
+			}
+			if (searchMinPrice.isEmpty()) {
+				params.put("minPrice", "0");
+			} else {
+				params.put("minPrice", searchMinPrice);
+			}
+			if (searchMaxPrice.isEmpty()) {
+				params.put("maxPrice", String.valueOf(Integer.MAX_VALUE));
+			} else {
+				params.put("maxPrice", searchMaxPrice);				
+			}
 			ResponseEntity<Product[]> response = rest.getForEntity(serviceUrl,
 																   Product[].class, params);
 			if (response.getStatusCode() == HttpStatus.OK) {

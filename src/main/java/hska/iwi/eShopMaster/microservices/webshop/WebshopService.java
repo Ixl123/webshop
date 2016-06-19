@@ -76,8 +76,10 @@ public class WebshopService {
 	}
 	
 	public ResponseEntity<Product> getProduct(int id) {
-		return restTemplate.getForEntity(productServiceUrl + "/products/{id}",
+		ResponseEntity<Product> response = restTemplate.getForEntity(productServiceUrl + "/products/{id}",
 										 Product.class, id);
+		getCategoryForProduct(response.getBody(), getCategoryIdFromProduct(response.getBody().getId()));
+		return response;
 	}
 	
 	public ResponseEntity<Product[]> getProducts() {
@@ -89,10 +91,13 @@ public class WebshopService {
 	}
 	
 	public ResponseEntity<Product[]> searchForProducts(Map<String, String> params) {
-		System.out.println("Webshop is searching!");
-		return restTemplate.getForEntity(productServiceUrl
+		ResponseEntity<Product[]> response = restTemplate.getForEntity(productServiceUrl
 										 + "/products/{details}/{minPrice}/{maxPrice}",
 										 Product[].class, params);
+		for (Product product : response.getBody()) {
+			getCategoryForProduct(product, getCategoryIdFromProduct(product.getId()));
+		}
+		return response;
 	}
 	
 	private int getCategoryIdFromProduct(int productId) {
