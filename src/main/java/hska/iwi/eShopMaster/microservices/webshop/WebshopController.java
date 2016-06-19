@@ -1,9 +1,12 @@
 package hska.iwi.eShopMaster.microservices.webshop;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import hska.iwi.eShopMaster.microservices.categories.domain.Category;
 import hska.iwi.eShopMaster.model.database.dataobjects.Product;
@@ -46,16 +51,26 @@ public class WebshopController {
 		return webshopService.addCategory(categoryName);
 	}
 	
+	@HystrixCommand(fallbackMethod = "defaultGetAllCategory")
 	@RequestMapping("/categories")
 	public ResponseEntity<Category[]> getCategories() {
 		return webshopService.getCategories();
 	}
 	
+	public ResponseEntity<Category[]> defaultGetAllCategory() {
+		return new ResponseEntity<Category[]>(new Category[]{}, HttpStatus.OK);
+	}
+	
+	@HystrixCommand(fallbackMethod = "defaultDeleteCategory")
 	@RequestMapping(value = "categories/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteCategory(@PathVariable("id") int id) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", String.valueOf(id));
 		return webshopService.deleteCategory(params);
+	}
+	
+	public ResponseEntity<String> defaultDeleteCategory(int id) {
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
 	@RequestMapping("/categories/{name}")
