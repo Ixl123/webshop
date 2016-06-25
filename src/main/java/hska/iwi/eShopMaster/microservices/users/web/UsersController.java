@@ -24,10 +24,9 @@ public class UsersController {
 	public UsersController(UserRepository userRepository, RoleRepository roleRepository) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
-		System.out.println("----- Users: " + userRepository.countUsers());
 	}
 	
-	@RequestMapping("/users/{username}")
+	@RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
 	public User findByUsername(@PathVariable("username") String username) {
 		User user = userRepository.findByUsername(username);
 		return user;

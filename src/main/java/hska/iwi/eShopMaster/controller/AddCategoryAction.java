@@ -27,7 +27,7 @@ public class AddCategoryAction extends ActionSupport {
 	private String newCatName = null;
 	private List<Category> categories;
 	private User user;
-	private String serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/categories/create";
+	private String serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/categories";
 	private String serviceUrlGet = WebshopServer.WEBSHOP_SERVICE_URL + "/categories";
 
 	public String execute() throws Exception {

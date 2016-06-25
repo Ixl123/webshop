@@ -1,12 +1,13 @@
 package hska.iwi.eShopMaster.controller;
 
-import hska.iwi.eShopMaster.microservices.products.domain.Product;
+//import hska.iwi.eShopMaster.microservices.products.domain.Product;
 import hska.iwi.eShopMaster.microservices.webshop.WebshopServer;
 import hska.iwi.eShopMaster.model.businessLogic.manager.CategoryManager;
 import hska.iwi.eShopMaster.model.businessLogic.manager.ProductManager;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.CategoryManagerImpl;
 import hska.iwi.eShopMaster.model.businessLogic.manager.impl.ProductManagerImpl;
 import hska.iwi.eShopMaster.model.database.dataobjects.Category;
+import hska.iwi.eShopMaster.model.database.dataobjects.Product;
 import hska.iwi.eShopMaster.model.database.dataobjects.User;
 
 import java.util.Arrays;
@@ -36,16 +37,20 @@ public class AddProductAction extends ActionSupport {
 		User user = (User) session.get("webshop_user");
 
 		if(user != null && (user.getRole().getTyp().equals("admin"))) {
+			
+			String serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/categories/id/{id}";
+			RestTemplate rest = new RestTemplate();
+			ResponseEntity<Category> category = rest.getForEntity(serviceUrl, Category.class,
+																  categoryId);
 
 			Product product = new Product();
 			product.setName(name);
 			product.setPrice(Double.parseDouble(price));
-			product.setCategoryId(categoryId);
+			product.setCategory(category.getBody());
 			product.setDetails(details);
 			
-			String serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/products";
-			RestTemplate rest = new RestTemplate();
-			ResponseEntity<Product> response = rest.postForEntity(serviceUrl, product, Product.class);
+			serviceUrl = WebshopServer.WEBSHOP_SERVICE_URL + "/products";
+			ResponseEntity<String> response = rest.postForEntity(serviceUrl, product, String.class);
 			
 			if (response.equals(HttpStatus.CREATED)) {
 				System.out.println("Successfully created Product!");

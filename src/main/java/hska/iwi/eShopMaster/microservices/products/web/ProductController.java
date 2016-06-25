@@ -27,10 +27,9 @@ public class ProductController {
 	}
 	
 	@RequestMapping(value = "/products", method = RequestMethod.POST)
-	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-		Product createdProduct = productRepository.save(product);
-		System.out.println(createdProduct.getName());
-		return new ResponseEntity<Product>(createdProduct, HttpStatus.CREATED);
+	public ResponseEntity<String> createProduct(@RequestBody Product product) {
+		productRepository.save(product);
+		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 	
 	@RequestMapping(value = "/products/{id}", method = RequestMethod.DELETE)
@@ -39,7 +38,7 @@ public class ProductController {
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
-	@RequestMapping("/products/byCategory/{categoryid}")
+	@RequestMapping(value = "/products/byCategory/{categoryid}", method = RequestMethod.GET)
 	public List<Product> getProductsWithCategoryId(@PathVariable("categoryid") int categoryid) {
 		List<Product> list = productRepository.getProductsWithCategoryId(categoryid);
 		return list;

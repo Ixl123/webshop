@@ -24,7 +24,7 @@ public class CategoryController {
 		this.categoryRepository = categoryRepository;
 	}
 	
-	@RequestMapping(value = "/categories/create", method = RequestMethod.POST)
+	@RequestMapping(value = "/categories", method = RequestMethod.POST)
 	public ResponseEntity<Category> createCategory(@RequestBody String categoryName) {
 		Category createdCategory = categoryRepository.save(new Category(categoryName));
 		return new ResponseEntity<Category>(createdCategory, HttpStatus.CREATED);

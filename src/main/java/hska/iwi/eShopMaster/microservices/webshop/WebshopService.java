@@ -44,7 +44,7 @@ public class WebshopService {
 	}
 	
 	public ResponseEntity<Category> addCategory(String categoryName) {
-		return restTemplate.postForEntity(categoryServiceUrl + "/categories/create", categoryName, Category.class);
+		return restTemplate.postForEntity(categoryServiceUrl + "/categories", categoryName, Category.class);
 	}
 	
 	public ResponseEntity<Category[]> getCategories() {
@@ -65,9 +65,19 @@ public class WebshopService {
 										 Category.class, categoryName);
 	}
 	
-	public ResponseEntity<Product> createProduct(Product product) {
+	public ResponseEntity<Category> getCategoryWithId(int categoryId) {
+		return restTemplate.getForEntity(categoryServiceUrl + "/categories/{id}",
+				  						 Category.class, categoryId);
+	}
+	
+	public ResponseEntity<String> createProduct(Product product) {
+		hska.iwi.eShopMaster.microservices.products.domain.Product prod =
+				new hska.iwi.eShopMaster.microservices.products.domain.Product(product.getName(),
+																			   product.getPrice(),
+																			   product.getCategory().getId(),
+																			   product.getDetails());
 		return restTemplate.postForEntity(productServiceUrl + "/products",
-										  product, Product.class);
+										  prod, String.class);
 	}
 	
 	public ResponseEntity<String> deleteProduct(int id) {
@@ -78,7 +88,11 @@ public class WebshopService {
 	public ResponseEntity<Product> getProduct(int id) {
 		ResponseEntity<Product> response = restTemplate.getForEntity(productServiceUrl + "/products/{id}",
 										 Product.class, id);
-		getCategoryForProduct(response.getBody(), getCategoryIdFromProduct(response.getBody().getId()));
+		if (response.getBody() != null) {
+			getCategoryForProduct(response.getBody(), getCategoryIdFromProduct(response.getBody().getId()));
+		} else {
+			response = new ResponseEntity<Product>(HttpStatus.OK);
+		}
 		return response;
 	}
 	

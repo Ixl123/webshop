@@ -46,13 +46,13 @@ public class WebshopController {
 		return webshopService.registerUser(user);
 	}
 	
-	@RequestMapping(value = "/categories/create", method = RequestMethod.POST)
+	@RequestMapping(value = "/categories", method = RequestMethod.POST)
 	public ResponseEntity<Category> createCategory(@RequestBody String categoryName) {
 		return webshopService.addCategory(categoryName);
 	}
 	
 	@HystrixCommand(fallbackMethod = "defaultGetAllCategory")
-	@RequestMapping("/categories")
+	@RequestMapping(value = "/categories", method = RequestMethod.GET)
 	public ResponseEntity<Category[]> getCategories() {
 		return webshopService.getCategories();
 	}
@@ -73,13 +73,18 @@ public class WebshopController {
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
-	@RequestMapping("/categories/{name}")
+	@RequestMapping(value = "/categories/{name}", method = RequestMethod.GET)
 	public ResponseEntity<Category> getCategory(@PathVariable("name") String categoryName) {
 		return webshopService.getCategory(categoryName);
 	}
 	
+	@RequestMapping(value = "/categories/id/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Category> getCategoryWithId(@PathVariable("id") int id) {
+		return webshopService.getCategoryWithId(id);
+	}
+	
 	@RequestMapping(value = "/products", method = RequestMethod.POST)
-	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+	public ResponseEntity<String> createProduct(@RequestBody Product product) {
 		return webshopService.createProduct(product);
 	}
 	
